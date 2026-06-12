@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
-import { Book, Lock, User, Loader2 } from 'lucide-react';
+import { Lock, User, Loader2 } from 'lucide-react';
+import ksfLogo from '../assets/ksf_logo.png';
 
 const Login = () => {
     const [formData, setFormData] = useState({ username: '', password: '' });
@@ -37,14 +38,14 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-8 md:p-10 rounded-3xl border border-slate-100 shadow-xl transition-all duration-300 hover:shadow-2xl">
                 <div className="flex flex-col items-center">
-                    <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
-                        <Book className="w-8 h-8 text-indigo-600 animate-pulse" />
+                    <div className="w-18 h-18 flex items-center justify-center mb-4">
+                        <img src={ksfLogo} alt="KSF Financial" className="w-full h-full object-contain" />
                     </div>
                     <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-                        Daily Loan Ledger
+                        KSF Financial
                     </h2>
                     <p className="mt-2 text-center text-sm text-slate-500">
-                        Sign in to manage your loan accounts
+                        Daily Loan Ledger
                     </p>
                 </div>
 

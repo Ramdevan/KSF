@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Book, PlusCircle, LayoutDashboard, Coins, Menu, X, Receipt, LogOut } from 'lucide-react';
+import { PlusCircle, LayoutDashboard, Coins, Menu, X, Receipt, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ksfLogo from '../assets/ksf_logo.png';
 
 const Navbar = () => {
     const location = useLocation();
@@ -49,9 +50,9 @@ const Navbar = () => {
         <>
             {/* Mobile Top Bar */}
             <div className="lg:hidden flex items-center justify-between bg-white px-4 h-16 border-b border-gray-200 w-full sticky top-0 z-40 shadow-sm">
-                <Link to="/" className="flex items-center gap-2 text-indigo-600 font-sans text-xl font-extrabold tracking-tight">
-                    <Book className="w-5 h-5 text-indigo-600" />
-                    <span>LoanLedger</span>
+                <Link to="/" className="flex items-center gap-2 text-slate-800 font-sans text-lg font-bold tracking-tight">
+                    <img src={ksfLogo} alt="KSF Logo" className="w-7 h-7 object-contain" />
+                    <span>KSF Financial</span>
                 </Link>
                 <button
                     onClick={toggleSidebar}
@@ -77,9 +78,9 @@ const Navbar = () => {
             >
                 {/* Brand / Logo */}
                 <div className="h-16 px-6 border-b border-gray-200 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 text-indigo-600 font-sans text-xl font-extrabold tracking-tight">
-                        <Book className="w-6 h-6 text-indigo-600" />
-                        <span>LoanLedger</span>
+                    <Link to="/" className="flex items-center gap-2.5 text-slate-800 font-sans text-xl font-bold tracking-tight">
+                        <img src={ksfLogo} alt="KSF Logo" className="w-9 h-9 object-contain" />
+                        <span>KSF Financial</span>
                     </Link>
                     <button
                         onClick={toggleSidebar}
