@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+  }
+}
+
+.ledger-container {
+  @apply max-w-6xl mx-auto p-6 md:p-8 bg-white border border-slate-100 rounded-2xl my-8 transition-all duration-300;
+  box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.08), 0 1px 3px rgba(79, 70, 229, 0.02);
+}
+
+.ledger-header {
+  @apply border-b border-slate-100 pb-5 mb-8;
+}
+
+.ledger-title {
+  @apply font-bold text-2xl md:text-3xl text-slate-900 tracking-tight;
+}
+
+.ledger-table {
+  @apply w-full border-collapse text-left whitespace-nowrap;
+}
+
+.ledger-table th {
+  @apply bg-slate-50/80 text-slate-500 px-6 py-4 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200/60;
+}
+
+.ledger-table td {
+  @apply px-6 py-4 text-sm text-slate-700 border-b border-slate-100 transition-colors duration-150;
+}
+
+.ledger-table tr:hover td {
+  @apply bg-slate-50/50;
+}
+
+.ledger-card {
+  @apply bg-white border border-slate-100 rounded-2xl p-6 transition-all duration-300;
+  box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.08), 0 1px 3px rgba(79, 70, 229, 0.02);
+}
+
+.ledger-card:hover {
+  box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.15), 0 1px 5px rgba(79, 70, 229, 0.05);
+}
+
+.btn-primary {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-95 cursor-pointer;
+}
+
+.form-input {
+  @apply block w-full rounded-xl border-slate-200 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-100 sm:text-sm p-3 border transition-all duration-200 outline-none;
+}
