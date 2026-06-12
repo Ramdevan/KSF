@@ -38,15 +38,12 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8 bg-white p-8 md:p-10 rounded-3xl border border-slate-100 shadow-xl transition-all duration-300 hover:shadow-2xl">
                 <div className="flex flex-col items-center">
-                    <div className="w-18 h-18 flex items-center justify-center mb-4">
+                    <div className="w-32 h-32 flex items-center justify-center mb-4">
                         <img src={ksfLogo} alt="KSF Financial" className="w-full h-full object-contain" />
                     </div>
                     <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-                        KSF Financial
-                    </h2>
-                    <p className="mt-2 text-center text-sm text-slate-500">
                         Daily Loan Ledger
-                    </p>
+                    </h2>
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

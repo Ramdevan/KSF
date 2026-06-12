@@ -49,10 +49,10 @@ const Navbar = () => {
     return (
         <>
             {/* Mobile Top Bar */}
-            <div className="lg:hidden flex items-center justify-between bg-white px-4 h-16 border-b border-gray-200 w-full sticky top-0 z-40 shadow-sm">
-                <Link to="/" className="flex items-center gap-2 text-slate-800 font-sans text-lg font-bold tracking-tight">
-                    <img src={ksfLogo} alt="KSF Logo" className="w-7 h-7 object-contain" />
-                    <span>KSF Financial</span>
+            <div className="lg:hidden flex items-center justify-between bg-white px-3 h-16 border-b border-gray-200 w-full sticky top-0 z-40 shadow-sm">
+                <Link to="/" className="flex items-center gap-2 text-slate-800 font-sans text-sm font-bold tracking-tight whitespace-nowrap">
+                    <img src={ksfLogo} alt="KSF Logo" className="w-10 h-10 object-contain" />
+                    <span>Daily Loan Ledger</span>
                 </Link>
                 <button
                     onClick={toggleSidebar}
@@ -76,11 +76,10 @@ const Navbar = () => {
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
-                {/* Brand / Logo */}
-                <div className="h-16 px-6 border-b border-gray-200 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2.5 text-slate-800 font-sans text-xl font-bold tracking-tight">
-                        <img src={ksfLogo} alt="KSF Logo" className="w-9 h-9 object-contain" />
-                        <span>KSF Financial</span>
+                <div className="h-20 px-3 border-b border-gray-200 flex items-center justify-between">
+                    <Link to="/" className="flex items-center gap-2 text-slate-800 font-sans text-base font-bold tracking-tight whitespace-nowrap">
+                        <img src={ksfLogo} alt="KSF Logo" className="w-14 h-14 object-contain" />
+                        <span>Daily Loan Ledger</span>
                     </Link>
                     <button
                         onClick={toggleSidebar}
