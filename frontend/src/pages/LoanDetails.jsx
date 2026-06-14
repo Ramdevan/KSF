@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { Plus, ArrowLeft, Printer, Info, Wallet, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import DateInput from '../components/DateInput';
 
 const LoanDetails = () => {
     const { id } = useParams();
@@ -110,6 +111,7 @@ const LoanDetails = () => {
                     </div>
                     <p className="text-sm"><strong>Customer Name:</strong> {loan.customer_name}</p>
                     <p className="text-sm mt-1"><strong>Date:</strong> {new Date(loan.loan_date).toLocaleDateString('en-GB')}</p>
+                    <p className="text-sm mt-1"><strong>Installment Type:</strong> <span className="capitalize">{loan.installment_type || 'daily'}</span></p>
                     <p className="text-sm mt-1"><strong>Business:</strong> {loan.business_name || 'N/A'}</p>
                     <p className="text-sm mt-1"><strong>Guarantor:</strong> {loan.guarantor_name || 'N/A'}</p>
                     <p className="text-sm mt-1 text-gray-600"><strong>Address:</strong> {loan.address || 'N/A'}</p>
@@ -166,9 +168,8 @@ const LoanDetails = () => {
                                 max={summary?.remainingBalance}
                                 required
                             />
-                            <input
-                                type="date"
-                                className="form-input text-xs"
+                            <DateInput
+                                className="text-xs"
                                 value={installmentForm.date}
                                 min={loan.loan_date}
                                 onChange={(e) => setInstallmentForm({ ...installmentForm, date: e.target.value })}

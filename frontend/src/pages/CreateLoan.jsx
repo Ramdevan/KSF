@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { Save, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
+import DateInput from '../components/DateInput';
 
 const CreateLoan = () => {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ const CreateLoan = () => {
         interest: '',
         total_loan_amount: '0.00',
         loan_date: new Date().toISOString().split('T')[0],
+        installment_type: 'daily',
     });
     const [loading, setLoading] = useState(false);
 
@@ -142,14 +144,27 @@ const CreateLoan = () => {
 
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-gray-700">Loan Date *</label>
-                        <input
-                            type="date"
+                        <DateInput
                             name="loan_date"
                             required
-                            className="form-input"
                             value={formData.loan_date}
                             onChange={handleChange}
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">Installment Type *</label>
+                        <select
+                            name="installment_type"
+                            required
+                            className="form-input bg-white cursor-pointer"
+                            value={formData.installment_type}
+                            onChange={handleChange}
+                        >
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
                     </div>
                 </div>
 

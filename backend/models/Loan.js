@@ -41,6 +41,11 @@ const Loan = sequelize.define('Loan', {
         type: DataTypes.DATEONLY,
         allowNull: false,
     },
+    installment_type: {
+        type: DataTypes.ENUM('daily', 'weekly', 'monthly'),
+        allowNull: false,
+        defaultValue: 'daily',
+    },
     status: {
         type: DataTypes.ENUM('active', 'closed'),
         defaultValue: 'active',

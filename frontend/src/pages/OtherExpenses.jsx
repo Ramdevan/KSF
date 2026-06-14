@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { Save, Trash2, Calendar, ShoppingBag, DollarSign, List } from 'lucide-react';
 import toast from 'react-hot-toast';
+import DateInput from '../components/DateInput';
 
 const OtherExpenses = () => {
     const [expenses, setExpenses] = useState([]);
@@ -128,11 +129,9 @@ const OtherExpenses = () => {
                                     <Calendar className="w-4 h-4 text-gray-400" />
                                     Date *
                                 </label>
-                                <input
-                                    type="date"
+                                <DateInput
                                     name="date"
                                     required
-                                    className="form-input"
                                     value={formData.date}
                                     onChange={handleChange}
                                 />

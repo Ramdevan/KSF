@@ -141,11 +141,20 @@ const Dashboard = () => {
                                                     <User className="w-4 h-4 text-gray-400" />
                                                     {loan.customer_name}
                                                 </span>
-                                                {loan.business_name && (
-                                                    <span className="text-xs text-gray-500 pl-6">
-                                                        {loan.business_name}
+                                                <div className="flex flex-wrap items-center gap-2 pl-6 mt-1">
+                                                    {loan.business_name && (
+                                                        <span className="text-xs text-gray-500 mr-1">
+                                                            {loan.business_name}
+                                                        </span>
+                                                    )}
+                                                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider ${
+                                                        loan.installment_type === 'monthly' ? 'bg-purple-100 text-purple-700' :
+                                                        loan.installment_type === 'weekly' ? 'bg-blue-100 text-blue-700' :
+                                                        'bg-emerald-100 text-emerald-700'
+                                                    }`}>
+                                                        {loan.installment_type || 'daily'}
                                                     </span>
-                                                )}
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="font-semibold text-ledger-accent">₹{parseFloat(loan.total_loan_amount && parseFloat(loan.total_loan_amount) > 0 ? loan.total_loan_amount : loan.loan_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>

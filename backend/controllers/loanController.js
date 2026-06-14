@@ -3,7 +3,7 @@ const Installment = require('../models/Installment');
 
 exports.createLoan = async (req, res) => {
     try {
-        const { customer_name, address, guarantor_name, business_name, loan_amount, loan_date, interest, total_loan_amount } = req.body;
+        const { customer_name, address, guarantor_name, business_name, loan_amount, loan_date, interest, total_loan_amount, installment_type } = req.body;
 
         if (!customer_name || !loan_amount || !loan_date) {
             return res.status(400).json({ message: 'Please provide all required fields' });
@@ -22,6 +22,7 @@ exports.createLoan = async (req, res) => {
             interest: parsedInterest,
             total_loan_amount: computedTotal,
             loan_date,
+            installment_type: installment_type || 'daily',
         });
 
         res.status(201).json({ success: true, data: newLoan });
