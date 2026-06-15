@@ -53,7 +53,8 @@ const Dashboard = () => {
     const currentLoans = sortedLoans.slice(indexOfFirstItem, indexOfLastItem);
 
     const totalLoanAmount = loans.reduce((sum, loan) => sum + parseFloat(loan.total_loan_amount && parseFloat(loan.total_loan_amount) > 0 ? loan.total_loan_amount : loan.loan_amount || 0), 0);
-    const activeLoanAmount = loans.filter(loan => loan.status === 'active').reduce((sum, loan) => {
+    const totalActiveLoanAmount = loans.filter(loan => loan.status === 'active').reduce((sum, loan) => sum + parseFloat(loan.total_loan_amount && parseFloat(loan.total_loan_amount) > 0 ? loan.total_loan_amount : loan.loan_amount || 0), 0);
+    const activeLoanBalance = loans.filter(loan => loan.status === 'active').reduce((sum, loan) => {
         const loanTotal = parseFloat(loan.total_loan_amount && parseFloat(loan.total_loan_amount) > 0 ? loan.total_loan_amount : loan.loan_amount || 0);
         const totalPaid = (loan.installments || []).reduce((instSum, inst) => instSum + parseFloat(inst.amount || 0), 0);
         return sum + Math.max(0, loanTotal - totalPaid);
@@ -76,36 +77,44 @@ const Dashboard = () => {
                 </Link>
             </div>
 
-            {/* Summary Cards Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-                <div className="ledger-card border-l-4 border-l-emerald-600 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Total Loan Amount</div>
-                    <div className="text-base font-bold text-emerald-700 tracking-tight">₹{totalLoanAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+            {/* Summary Cards Grid - Row 1: Financial Amounts */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div className="ledger-card border-l-4 border-l-emerald-600 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Total Loan Amount</div>
+                    <div className="text-xl sm:text-2xl font-bold text-emerald-700 tracking-tight">₹{totalLoanAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                 </div>
 
-                <div className="ledger-card border-l-4 border-l-rose-500 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Active Loan Amount</div>
-                    <div className="text-base font-bold text-rose-700 tracking-tight">₹{activeLoanAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                <div className="ledger-card border-l-4 border-l-amber-500 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Total Active Loan</div>
+                    <div className="text-xl sm:text-2xl font-bold text-amber-700 tracking-tight">₹{totalActiveLoanAmount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                 </div>
 
-                <div className="ledger-card border-l-4 border-l-blue-600 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Total Interest</div>
-                    <div className="text-base font-bold text-blue-700 tracking-tight">₹{totalInterest.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                <div className="ledger-card border-l-4 border-l-rose-500 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Active Loan Balance</div>
+                    <div className="text-xl sm:text-2xl font-bold text-rose-700 tracking-tight">₹{activeLoanBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
                 </div>
 
-                <div className="ledger-card border-l-4 border-l-purple-600 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Total Customers</div>
-                    <div className="text-lg font-bold text-purple-700">{totalCustomers}</div>
+                <div className="ledger-card border-l-4 border-l-blue-600 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Total Interest</div>
+                    <div className="text-xl sm:text-2xl font-bold text-blue-700 tracking-tight">₹{totalInterest.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</div>
+                </div>
+            </div>
+
+            {/* Summary Cards Grid - Row 2: Customer Statistics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div className="ledger-card border-l-4 border-l-purple-600 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Total Customers</div>
+                    <div className="text-xl sm:text-2xl font-bold text-purple-700">{totalCustomers}</div>
                 </div>
 
-                <div className="ledger-card border-l-4 border-l-green-600 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Active Customers</div>
-                    <div className="text-lg font-bold text-green-700">{activeCustomers}</div>
+                <div className="ledger-card border-l-4 border-l-green-600 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Active Customers</div>
+                    <div className="text-xl sm:text-2xl font-bold text-green-700">{activeCustomers}</div>
                 </div>
 
-                <div className="ledger-card border-l-4 border-l-gray-400 bg-white !px-3 !py-4 shadow-sm">
-                    <div className="text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 whitespace-nowrap">Closed Customers</div>
-                    <div className="text-lg font-bold text-gray-600">{closedCustomers}</div>
+                <div className="ledger-card border-l-4 border-l-gray-400 bg-white p-5 shadow-sm">
+                    <div className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1.5 whitespace-nowrap">Closed Customers</div>
+                    <div className="text-xl sm:text-2xl font-bold text-gray-600">{closedCustomers}</div>
                 </div>
             </div>
 
