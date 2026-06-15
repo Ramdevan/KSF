@@ -7,6 +7,7 @@ import LoanDetails from './pages/LoanDetails';
 import TotalInvestment from './pages/TotalInvestment';
 import OtherExpenses from './pages/OtherExpenses';
 import Login from './pages/Login';
+import EditLoan from './pages/EditLoan';
 
 const ProtectedLayout = ({ children }) => {
     const token = localStorage.getItem('token');
@@ -84,6 +85,14 @@ function App() {
                     element={
                         <ProtectedLayout>
                             <LoanDetails />
+                        </ProtectedLayout>
+                    }
+                />
+                <Route
+                    path="/edit-loan/:id"
+                    element={
+                        <ProtectedLayout>
+                            <EditLoan />
                         </ProtectedLayout>
                     }
                 />

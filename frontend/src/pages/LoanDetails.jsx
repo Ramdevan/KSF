@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { Plus, ArrowLeft, Printer, Info, Wallet, CheckCircle2 } from 'lucide-react';
+import { Plus, ArrowLeft, Printer, Info, Wallet, CheckCircle2, Pencil } from 'lucide-react';
 import toast from 'react-hot-toast';
 import DateInput from '../components/DateInput';
 
@@ -91,12 +91,16 @@ const LoanDetails = () => {
                 <div>
                     <h1 className="ledger-title">Loan Ledger: #L-{loan.id}</h1>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
+                    <button onClick={() => navigate(`/edit-loan/${loan.id}`)} className="bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 px-4 py-2 rounded flex items-center gap-2 text-sm font-medium transition-colors">
+                        <Pencil className="w-4 h-4" />
+                        Edit Loan
+                    </button>
                     <button onClick={() => window.print()} className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded flex items-center gap-2 text-sm font-medium transition-colors">
                         <Printer className="w-4 h-4" />
                         Print Ledger
                     </button>
-                    <button onClick={() => navigate('/')} className="text-gray-500 hover:text-ledger-accent flex items-center gap-1 text-sm">
+                    <button onClick={() => navigate('/')} className="text-gray-500 hover:text-ledger-accent flex items-center gap-1 text-sm ml-2">
                         <ArrowLeft className="w-4 h-4" />
                         Back to List
                     </button>

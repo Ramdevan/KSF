@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Eye, Plus, Search, User } from 'lucide-react';
+import { Eye, Plus, Search, User, Pencil } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Dashboard = () => {
@@ -166,10 +166,16 @@ const Dashboard = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <Link to={`/loan/${loan.id}`} className="text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium">
-                                                <Eye className="w-4 h-4" />
-                                                View Ledger
-                                            </Link>
+                                            <div className="flex items-center gap-4">
+                                                <Link to={`/loan/${loan.id}`} className="text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium">
+                                                    <Eye className="w-4 h-4" />
+                                                    View Ledger
+                                                </Link>
+                                                <Link to={`/edit-loan/${loan.id}`} className="text-amber-600 hover:text-amber-800 flex items-center gap-1 font-medium">
+                                                    <Pencil className="w-3.5 h-3.5" />
+                                                    Edit
+                                                </Link>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
