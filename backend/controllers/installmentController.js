@@ -109,3 +109,105 @@ exports.getLedger = async (req, res) => {
         res.status(500).json({ message: 'Server Error' });
     }
 };
+
+const recalculateBalances = async (loanId) => {
+    const loan = await Loan.findByPk(loanId);
+    if (!loan) return;
+
+    const installments = await Installment.findAll({
+        where: { loanId },
+        order: [['receipt_no', 'ASC'], ['id', 'ASC']]
+    });
+
+    const initialBalance = (loan.total_loan_amount && parseFloat(loan.total_loan_amount) > 0)
+        ? parseFloat(loan.total_loan_amount)
+        : parseFloat(loan.loan_amount);
+
+    let runningBalance = initialBalance;
+
+    for (let i = 0; i < installments.length; i++) {
+        const inst = installments[i];
+        runningBalance = runningBalance - parseFloat(inst.amount);
+        inst.balance = runningBalance < 0 ? 0 : runningBalance;
+        await inst.save();
+    }
+
+    // Update loan status if remaining balance reaches zero or is above zero
+    if (runningBalance <= 0) {
+        loan.status = 'closed';
+    } else {
+        loan.status = 'active';
+    }
+    await loan.save();
+};
+
+exports.updateInstallment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { date, amount } = req.body;
+
+        const installment = await Installment.findByPk(id);
+        if (!installment) {
+            return res.status(404).json({ message: 'Installment not found' });
+        }
+
+        if (date) {
+            const loan = await Loan.findByPk(installment.loanId);
+            if (new Date(date) < new Date(loan.loan_date)) {
+                return res.status(400).json({ message: `Installment date cannot be before loan date (${loan.loan_date})` });
+            }
+            installment.date = date;
+        }
+
+        if (amount !== undefined) {
+            installment.amount = parseFloat(amount);
+        }
+
+        await installment.save();
+
+        // Recalculate all balances for this loan
+        await recalculateBalances(installment.loanId);
+
+        // Fetch the updated installment to send back
+        const updatedInstallment = await Installment.findByPk(id);
+
+        res.json({ success: true, data: updatedInstallment });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
+exports.deleteInstallment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const installment = await Installment.findByPk(id);
+        if (!installment) {
+            return res.status(404).json({ message: 'Installment not found' });
+        }
+
+        const loanId = installment.loanId;
+
+        await installment.destroy();
+
+        // Adjust all receipt numbers for installments that were after this one
+        const subsequentInstallments = await Installment.findAll({
+            where: { loanId },
+            order: [['receipt_no', 'ASC'], ['id', 'ASC']]
+        });
+
+        for (let i = 0; i < subsequentInstallments.length; i++) {
+            subsequentInstallments[i].receipt_no = i + 1;
+            await subsequentInstallments[i].save();
+        }
+
+        // Recalculate balances
+        await recalculateBalances(loanId);
+
+        res.json({ success: true, message: 'Installment deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+

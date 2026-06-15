@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
-import { Plus, ArrowLeft, Printer, Info, Wallet, CheckCircle2, Pencil } from 'lucide-react';
+import { Plus, ArrowLeft, Printer, Info, Wallet, CheckCircle2, Pencil, Trash2, Save, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import DateInput from '../components/DateInput';
 
@@ -16,6 +16,12 @@ const LoanDetails = () => {
         amount: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [editingInstallmentId, setEditingInstallmentId] = useState(null);
+    const [editFormData, setEditFormData] = useState({
+        date: '',
+        amount: '',
+    });
+    const [isUpdatingInstallment, setIsUpdatingInstallment] = useState(false);
 
     useEffect(() => {
         fetchLedger();
@@ -55,6 +61,84 @@ const LoanDetails = () => {
             toast.error(error.response?.data?.message || 'Failed to add installment');
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleEditClick = (inst) => {
+        setEditingInstallmentId(inst.id);
+        setEditFormData({
+            date: inst.date,
+            amount: inst.amount,
+        });
+    };
+
+    const handleEditChange = (e) => {
+        setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+    };
+
+    const handleUpdateSubmit = async (instId) => {
+        const amt = parseFloat(editFormData.amount);
+        if (!editFormData.amount || amt <= 0) {
+            return toast.error('Please enter a valid amount');
+        }
+        setIsUpdatingInstallment(true);
+        try {
+            await api.put(`/installments/${instId}`, {
+                date: editFormData.date,
+                amount: amt,
+            });
+            toast.success('Installment updated successfully!');
+            setEditingInstallmentId(null);
+            fetchLedger();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to update installment');
+        } finally {
+            setIsUpdatingInstallment(false);
+        }
+    };
+
+    const handleDeleteClick = (instId) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2 py-1">
+                <p className="text-sm font-semibold text-gray-800">
+                    Are you sure you want to delete this installment?
+                </p>
+                <p className="text-xs text-gray-500">
+                    All subsequent balances will be recalculated.
+                </p>
+                <div className="flex gap-2 mt-1 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                        }}
+                        className="px-2.5 py-1 text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            await executeDelete(instId);
+                        }}
+                        className="px-2.5 py-1 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded transition-colors"
+                    >
+                        Delete
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: 6000,
+            position: 'top-center',
+        });
+    };
+
+    const executeDelete = async (instId) => {
+        try {
+            await api.delete(`/installments/${instId}`);
+            toast.success('Installment deleted successfully!');
+            fetchLedger();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to delete installment');
         }
     };
 
@@ -210,22 +294,96 @@ const LoanDetails = () => {
                                 <th>Date</th>
                                 <th>Amount Paid</th>
                                 <th>Balance Remaining</th>
+                                <th className="text-right pr-6">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentInstallments.length > 0 ? (
-                                currentInstallments.map((inst, index) => (
-                                    <tr key={inst.id}>
-                                        <td className="font-semibold text-slate-500">{installments.length - (indexOfFirstInstallment + index)}</td>
-                                        <td className="font-mono">REC-{inst.receipt_no.toString().padStart(4, '0')}</td>
-                                        <td>{new Date(inst.date).toLocaleDateString('en-GB')}</td>
-                                        <td className="font-bold text-green-600">+ ₹{parseFloat(inst.amount).toLocaleString()}</td>
-                                        <td className="font-bold text-ledger-accent">₹{parseFloat(inst.balance).toLocaleString()}</td>
-                                    </tr>
-                                ))
+                                currentInstallments.map((inst, index) => {
+                                    const isEditing = editingInstallmentId === inst.id;
+                                    return (
+                                        <tr key={inst.id} className={isEditing ? 'bg-amber-50/30' : ''}>
+                                            <td className="font-semibold text-slate-500">{installments.length - (indexOfFirstInstallment + index)}</td>
+                                            <td className="font-mono">REC-{inst.receipt_no.toString().padStart(4, '0')}</td>
+                                            
+                                            {isEditing ? (
+                                                <td className="w-[180px]">
+                                                    <DateInput
+                                                        name="date"
+                                                        required
+                                                        className="py-1 px-2 text-sm min-w-[140px]"
+                                                        value={editFormData.date}
+                                                        min={loan.loan_date}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                            ) : (
+                                                <td>{new Date(inst.date).toLocaleDateString('en-GB')}</td>
+                                            )}
+
+                                            {isEditing ? (
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        name="amount"
+                                                        required
+                                                        min="1"
+                                                        step="0.01"
+                                                        className="form-input py-1 px-2 text-sm max-w-[120px]"
+                                                        value={editFormData.amount}
+                                                        onChange={handleEditChange}
+                                                    />
+                                                </td>
+                                            ) : (
+                                                <td className="font-bold text-green-600">+ ₹{parseFloat(inst.amount).toLocaleString()}</td>
+                                            )}
+
+                                            <td className="font-bold text-ledger-accent">₹{parseFloat(inst.balance).toLocaleString()}</td>
+                                            
+                                            <td className="text-right pr-6">
+                                                {isEditing ? (
+                                                    <div className="flex justify-end gap-2">
+                                                        <button
+                                                            onClick={() => handleUpdateSubmit(inst.id)}
+                                                            disabled={isUpdatingInstallment}
+                                                            className="text-emerald-600 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded transition-colors"
+                                                            title="Save"
+                                                        >
+                                                            <Save className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditingInstallmentId(null)}
+                                                            className="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition-colors"
+                                                            title="Cancel"
+                                                        >
+                                                            <X className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex justify-end gap-2">
+                                                        <button
+                                                            onClick={() => handleEditClick(inst)}
+                                                            className="text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 p-1.5 rounded transition-colors"
+                                                            title="Edit"
+                                                        >
+                                                            <Pencil className="w-3.5 h-3.5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteClick(inst.id)}
+                                                            className="text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 p-1.5 rounded transition-colors"
+                                                            title="Delete"
+                                                        >
+                                                            <Trash2 className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="text-center py-10 text-gray-400 italic">
+                                    <td colSpan="6" className="text-center py-10 text-gray-400 italic">
                                         No installments recorded yet.
                                     </td>
                                 </tr>
